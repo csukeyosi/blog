@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-12">
+		{% if is_creation %}
+		<h2>New Post</h2>
+		{% else %}
+		<h2>Edit Post</h2>
+		{% endif %}
+	</div>
+</div>
+
+<br>
+
+<div class="row">
+	<div class="col-md-12">
+		<form method="post">
+			<div class="row">
+				<div class="col-md-12">
+					<input type="text" name="subject" value="{{subject}}"
+					placeholder="Little Red Riding Hood">
+				</div>
+			</div>
+			<br>
+
+			<div class="row">
+				<div class="col-md-12">
+					<textarea class="textarea-post" name="content"
+					placeholder="Once upon a time...">{{content}}</textarea>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12 error">{{error}}</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12 text-right">
+					<button class="btn btn-primary default-font-size">
+						Submit
+					</button>
+				</div>
+			</div>
+
+		</form>
+	</div>
+</div>
+
+{% endblock %}

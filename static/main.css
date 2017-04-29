@@ -1,0 +1,91 @@
+*{
+	font-family: 'Expletus Sans', cursive;
+	font-size: 20px;
+}
+
+h2 {
+	font-size: 35px;
+}
+
+input {
+	width: 100%;
+}
+
+a.nostyle:link {
+	text-decoration: inherit;
+	color: inherit;
+	cursor: auto;
+	font-size: 35px;
+}
+
+a.nostyle:visited {
+	text-decoration: inherit;
+	cursor: auto;
+	font-size: 35px;
+}
+
+.error {
+	color: red;
+}
+
+.container {
+	width: 800px;
+	margin: 0 auto;
+	padding: 10px;
+	color: #333;
+}
+
+.textarea-post {
+  width: 100%;
+  min-height: 400px;
+}
+
+.textarea-comment {
+	width: 100%;
+	height: 130px;
+}
+
+.font-size-comment {
+	font-size: 16px;
+}
+
+.default-font-size {
+  font-size: 20px;
+}
+
+.main-title {
+	display: block;
+	color: #222;
+	font-size: 40px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 30px;
+	text-decoration: none;
+}
+
+.post-heading {
+	border-bottom: 2px solid #337ab7;
+}
+
+.default-color {
+	color: #337ab7;
+}
+
+.post-date {
+	color: #999;
+	height: 50px;
+	padding-top:15px;
+	padding-right:0px;
+	text-align: right;
+}
+
+.post-buttons {
+	height: 50px;
+	padding-right: 0px;
+	padding-left: 0px;
+	text-align: right;
+}
+
+.text-wrap {
+	word-wrap: break-word;
+}
