@@ -68,7 +68,6 @@ class NewComment(BlogHandler):
 
 class MyPostsPage(BlogHandler):
 	"""Responsible for showing the myposts page"""
-	def post(self, post_id):
 	def get(self):
 		self.render(True, 'list-posts.html', posts = self.user.posts)
 
