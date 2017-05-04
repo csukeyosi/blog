@@ -20,11 +20,15 @@ class AllPostsPage(BlogHandler):
 	"""Responsible for showing all posts"""
 	def get(self):
 		posts = model.Post.all().order("-created");
-		self.render(True, 'list-posts.html', posts = posts)
+		self.render(False, 'list-posts.html', posts = posts)
 
 class DeletePost(BlogHandler):
 	"""Responsible for deleting the post"""
 	def post(self, post_id):
+		if not self.user:
+			self.redirect('/login')
+			return
+
 		#check post
 		post = model.Post.by_id(long(post_id))
 		if not post:
@@ -47,16 +51,20 @@ class DeletePost(BlogHandler):
 class NewComment(BlogHandler):
 	"""Responsible for creating a new comment in the post"""
 	def post(self, post_id):
+		if not self.user:
+			self.redirect('/login')
+			return
+
 		#check post
 		post = model.Post.by_id(long(post_id))
 		if not post:
 			self.error(404)
 			return
 
-		content = self.request.get('content')
-
+		#check author
 		is_author = post.author.key().id() == self.user.key().id()
 
+		content = self.request.get('content')
 		if content:
 			comment = model.Comment(content = content, author=self.user,
 				post=post)
@@ -66,9 +74,85 @@ class NewComment(BlogHandler):
 
 		self.redirect(self.request.referer)
 
+class DeleteComment(BlogHandler):
+	"""Responsible for deleting the comment"""
+	def post(self, comment_id):
+		if not self.user:
+			self.redirect('/login')
+			return
+
+		#check comment
+		comment = model.Comment.by_id(long(comment_id))
+		if not comment:
+			self.error(404)
+			return
+
+		#check author
+		is_author = comment.author.key().id() == self.user.key().id()
+		if not is_author:
+			self.error(401)
+			return
+
+		comment.delete()
+
+		# reloads the page
+		time.sleep(0.1)
+
+		self.redirect(self.request.referer)
+
+class EditCommentPage(BlogHandler):
+	"""Responsible for showing/handling the post edit page and post edit form"""
+	def get(self, comment_id):
+		if not self.user:
+			self.redirect('/login')
+			return
+
+		#check comment
+		comment = model.Comment.by_id(long(comment_id))
+		if not comment:
+			self.error(404)
+			return
+
+		#check author
+		is_author = comment.author.key().id() == self.user.key().id()
+		if not is_author:
+			self.error(401)
+			return
+
+		self.render(True, "comment-form.html", content=comment.content)
+
+	def post(self, comment_id):
+		if not self.user:
+			self.redirect('/login')
+			return
+
+		content = self.request.get('content')
+		if content:
+			#check comment
+			comment = model.Comment.by_id(long(comment_id))
+			if not comment:
+				self.error(404)
+				return
+
+			comment.content = content
+			comment.put()
+
+			# reloads the page
+			time.sleep(0.1)
+
+			self.redirect('/post/%s' % str(comment.post.key().id()))
+		else:
+			error = "Content, please!"
+			self.render(True, "comment-form.html", error=error)
+
+
 class MyPostsPage(BlogHandler):
 	"""Responsible for showing the myposts page"""
 	def get(self):
+		if not self.user:
+			self.redirect('/login')
+			return
+
 		self.render(True, 'list-posts.html', posts = self.user.posts)
 
 class PostPage(BlogHandler):
@@ -80,12 +164,11 @@ class PostPage(BlogHandler):
 			self.error(404)
 			return
 
-		is_author = post.author.key().id() == self.user.key().id()
+		is_author = self.user and (post.author.key().id() == self.user.key().id())
+		has_liked = self.user and (self.user.key().id() in post.likes)
 		comments = post.comments.order("-created")
 
-		has_liked = self.user.key().id() in post.likes
-
-		self.render(True, "list-posts.html", is_author = is_author,
+		self.render(False, "list-posts.html", is_author = is_author,
 			has_liked = has_liked, comments= comments, posts = [post],
 			is_post_page = True)
 
@@ -95,6 +178,10 @@ class NewPostPage(BlogHandler):
 		self.render(True, "post-form.html", is_creation= True)
 
 	def post(self):
+		if not self.user:
+			self.redirect('/login')
+			return
+
 		subject = self.request.get('subject')
 		content = self.request.get('content')
 
@@ -111,6 +198,10 @@ class NewPostPage(BlogHandler):
 class EditPostPage(BlogHandler):
 	"""Responsible for showing/handling the post edit page and post edit form"""
 	def get(self, post_id):
+		if not self.user:
+			self.redirect('/login')
+			return
+
 		#check post
 		post = model.Post.by_id(long(post_id))
 		if not post:
@@ -127,19 +218,23 @@ class EditPostPage(BlogHandler):
 			post_id=post.subject, subject=post.subject, content=post.content)
 
 	def post(self, post_id):
+		if not self.user:
+			self.redirect('/login')
+			return
+
 		subject = self.request.get('subject')
 		content = self.request.get('content')
-
 		if subject and content:
+			#check post
 			post = model.Post.by_id(long(post_id))
-			post.subject = subject
-			post.content = content
-
 			if not post:
 				self.error(404)
 				return
 
+			post.subject = subject
+			post.content = content
 			post.put()
+
 			self.redirect('/post/%s' % str(post_id))
 		else:
 			error = "Subject and content, please!"
@@ -149,6 +244,10 @@ class EditPostPage(BlogHandler):
 class LikeHanlder(BlogHandler):
 	"""Responsible for the like/unlike action"""
 	def post(self, post_id):
+		if not self.user:
+			self.redirect('/login')
+			return
+
 		#check post
 		post = model.Post.by_id(long(post_id))
 		if not post:

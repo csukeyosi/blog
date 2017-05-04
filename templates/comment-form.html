@@ -3,11 +3,7 @@
 {% block content %}
 <div class="row">
 	<div class="col-md-12">
-		{% if is_creation %}
-		<h2>New Post</h2>
-		{% else %}
-		<h2>Edit Post</h2>
-		{% endif %}
+		<h2>Edit Comment</h2>
 	</div>
 </div>
 
@@ -15,19 +11,11 @@
 
 <div class="row">
 	<div class="col-md-12">
-		<form id="createForm" method="post">
-			<div class="row">
-				<div class="col-md-12">
-					<input type="text" name="subject" value="{{subject}}"
-					placeholder="Little Red Riding Hood">
-				</div>
-			</div>
-			<br>
-
+		<form id="editForm" method="post">
 			<div class="row">
 				<div class="col-md-12">
 					<textarea class="textarea-post" name="content"
-					placeholder="Once upon a time...">{{content}}</textarea>
+					placeholder="OMG! The best post I have ever seen...">{{content}}</textarea>
 				</div>
 			</div>
 
@@ -45,7 +33,7 @@
 				</button>
 			</div>
 			<div class="col-md-2 text-right">
-				<button form="createForm" class="btn btn-primary default-font-size">
+				<button form="editForm" class="btn btn-primary default-font-size">
 					Submit
 				</button>
 			</div>

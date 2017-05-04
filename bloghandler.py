@@ -28,12 +28,10 @@ class BlogHandler(webapp2.RequestHandler):
 		return t.render(params)
 
 	def render(self, required_login, template, **kw):
-		if required_login:
-			user = self.user
-			if user:
-				self.write(self.render_str(template, username=user.name, **kw))
-			else:
-				self.redirect('/login')
+		if self.user:
+			self.write(self.render_str(template, username=self.user.name, **kw))
+		elif required_login:
+			self.redirect('/login')
 		else:
 			self.write(self.render_str(template, **kw))
 

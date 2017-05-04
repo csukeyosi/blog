@@ -71,3 +71,10 @@ class Comment(db.Model):
 	created = db.DateTimeProperty(auto_now_add = True)
 	author = db.ReferenceProperty(User, required=True)
 	post = db.ReferenceProperty(Post, collection_name='comments', required=True)
+
+	def get_content(self):
+		return self.content.replace('\n', '<br>')
+
+	@classmethod
+	def by_id(self, uid):
+		return Comment.get_by_id(uid)
