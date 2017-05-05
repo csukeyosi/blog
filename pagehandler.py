@@ -134,6 +134,12 @@ class EditCommentPage(BlogHandler):
 				self.error(404)
 				return
 
+			#check author
+			is_author = comment.author.key().id() == self.user.key().id()
+			if not is_author:
+				self.error(401)
+				return
+
 			comment.content = content
 			comment.put()
 
@@ -229,6 +235,12 @@ class EditPostPage(BlogHandler):
 			post = model.Post.by_id(long(post_id))
 			if not post:
 				self.error(404)
+				return
+
+			#check author
+			is_author = post.author.key().id() == self.user.key().id()
+			if not is_author:
+				self.error(401)
 				return
 
 			post.subject = subject
