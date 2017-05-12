@@ -10,4 +10,4 @@ Prerequisites:
 3. Jinja2
 4. Google App Engine
 
-Run this command in a terminal: dev_appserver.py app.yaml
+Run this command in a terminal: `dev_appserver.py app.yaml`
